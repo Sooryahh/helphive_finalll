@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block title %}Volunteer Feedback | HelpHive{% endblock %}
+{% block content %}
+<div class="page-heading">
+    <div>
+        <h1>{{ opportunity.title }}</h1>
+        <p>Feedback from volunteers who attended this event.</p>
+    </div>
+    <a class="button secondary" href="{{ url_for('registrations', opportunity_id=opportunity.id) }}">Back to volunteers</a>
+</div>
+
+<div class="feedback-summary">
+    <div><strong>{{ average.average_rating or '—' }}</strong><span>Average rating / 5</span></div>
+    <div><strong>{{ average.feedback_count }}</strong><span>Feedback responses</span></div>
+</div>
+
+<div class="feedback-list">
+{% for item in feedback_rows %}
+<article class="feedback-item">
+    <div class="feedback-item-top">
+        <strong>{{ item.name }}</strong>
+        <span class="rating-stars">{{ '★' * item.rating }}{{ '☆' * (5-item.rating) }}</span>
+    </div>
+    <p>{{ item.comment }}</p>
+    <small>{{ item.created_at }}</small>
+</article>
+{% else %}
+<div class="card"><h3>No feedback yet</h3><p>Feedback will appear here after volunteers attend and submit their experience.</p></div>
+{% endfor %}
+</div>
+{% endblock %}

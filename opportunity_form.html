@@ -1,0 +1,111 @@
+{% extends "base.html" %}
+{% block title %}Opportunity Form | HelpHive{% endblock %}
+{% block content %}
+
+<div class="form-card wide">
+    {% if duplicates %}
+    <section class="duplicate-warning" id="duplicate-warning">
+        <div class="duplicate-header">
+            <div class="warning-icon">⚠</div>
+            <div>
+                <h2>Possible duplicate detected</h2>
+                <p>
+                    HelpHive found an existing opportunity that looks similar.
+                    Review it before creating another record.
+                </p>
+            </div>
+        </div>
+
+        {% for item in duplicates %}
+        <div class="duplicate-item">
+            <div>
+                <strong>{{ item.title }}</strong>
+                <div class="meta">📅 {{ item.event_date }} · 📍 {{ item.location }}</div>
+                <div class="meta">🏷 {{ item.category }} · Organizer: {{ item.organizer_name }}</div>
+            </div>
+            <div>
+                <span class="similarity">{{ item.similarity }}% similar</span>
+                <br><br>
+                <a href="{{ url_for('opportunity_detail', opportunity_id=item.id) }}">View existing →</a>
+            </div>
+        </div>
+        {% endfor %}
+
+        <div class="duplicate-actions">
+            <a class="button secondary" href="#opportunity-form">Review details</a>
+            <button class="button" type="submit" form="opportunity-form" name="force_create" value="1">
+                Create anyway
+            </button>
+        </div>
+    </section>
+    {% endif %}
+
+    <h1>{{ 'Edit opportunity' if opportunity else 'Create opportunity' }}</h1>
+
+    {% if not opportunity %}
+        <p class="muted">
+            HelpHive will check this program against existing opportunities before creating it.
+        </p>
+    {% endif %}
+
+    <form id="opportunity-form" method="POST">
+        <label>
+            Title
+            <input
+                name="title"
+                value="{{ form_data.get('title', opportunity.title if opportunity else '') }}"
+                required
+            >
+        </label>
+
+        <label>
+            Description
+            <textarea name="description" rows="5" required>{{ form_data.get('description', opportunity.description if opportunity else '') }}</textarea>
+        </label>
+
+        <label>
+            Category
+            <select name="category" required>
+                {% for c in ['Environment','Education','Social Service','Health','Technology','Campus','Other'] %}
+                    {% set selected = form_data.get('category', opportunity.category if opportunity else '') %}
+                    <option value="{{ c }}" {% if selected==c %}selected{% endif %}>{{ c }}</option>
+                {% endfor %}
+            </select>
+        </label>
+
+        <label>
+            Location
+            <input
+                name="location"
+                value="{{ form_data.get('location', opportunity.location if opportunity else '') }}"
+                required
+            >
+        </label>
+
+        <label>
+            Event date
+            <input
+                type="date"
+                name="event_date"
+                value="{{ form_data.get('event_date', opportunity.event_date if opportunity else '') }}"
+                required
+            >
+        </label>
+
+        <label>
+            Volunteer capacity
+            <input
+                type="number"
+                min="1"
+                name="capacity"
+                value="{{ form_data.get('capacity', opportunity.capacity if opportunity else 20) }}"
+                required
+            >
+        </label>
+
+        <button class="button full" type="submit">
+            {{ 'Save changes' if opportunity else 'Check & create opportunity' }}
+        </button>
+    </form>
+</div>
+{% endblock %}

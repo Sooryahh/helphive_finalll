@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block title %}Register | HelpHive{% endblock %}
+{% block content %}
+<div class="form-card">
+    <h1>Join the hive</h1>
+    <p class="muted">Create your college volunteering account.</p>
+
+    <form method="POST">
+        <label>
+            Full name
+            <input name="name" autocomplete="name" required>
+        </label>
+
+        <label>
+            Email
+            <input type="email" name="email" autocomplete="email" required>
+        </label>
+
+        <label>
+            Password
+            <input type="password" name="password" minlength="6" autocomplete="new-password" required>
+        </label>
+
+        <label>
+            Account type
+            <select name="role">
+                <option value="student">Student volunteer</option>
+                <option value="organizer">Organizer</option>
+            </select>
+        </label>
+
+        <button class="button full" type="submit">Create account →</button>
+    </form>
+</div>
+{% endblock %}

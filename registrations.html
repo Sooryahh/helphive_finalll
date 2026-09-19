@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+{% block title %}Volunteers | HelpHive{% endblock %}
+{% block content %}
+
+<div class="page-heading">
+    <div>
+        <h1>{{ opportunity.title }}</h1>
+        <p>Manage volunteer registrations.</p>
+    </div>
+</div>
+
+<div class="table-wrap">
+<table>
+    <tr>
+        <th>Name</th>
+        <th>Email</th>
+        <th>Status</th>
+        <th>Feedback</th>
+        <th>Action</th>
+    </tr>
+
+    {% for r in registrations %}
+    <tr>
+        <td>{{ r.name }}</td>
+        <td>{{ r.email }}</td>
+        <td>
+            <span class="status {{ r.status }}">{{ r.status }}</span>
+            {% if r.attendance %} · Present{% endif %}
+        </td>
+        <td>
+            {% if r.feedback_rating %}
+                <span class="feedback-done">★ {{ r.feedback_rating }}/5</span>
+            {% elif r.attendance %}
+                <span class="muted">Not submitted</span>
+            {% else %}
+                <span class="muted">After attendance</span>
+            {% endif %}
+        </td>
+        <td>
+            <div class="actions">
+                <form method="POST" action="{{ url_for('update_registration', registration_id=r.id, action='approved') }}">
+                    <button class="small-button" type="submit">Approve</button>
+                </form>
+                <form method="POST" action="{{ url_for('update_registration', registration_id=r.id, action='rejected') }}">
+                    <button class="small-button danger-button" type="submit">Reject</button>
+                </form>
+                <form method="POST" action="{{ url_for('update_registration', registration_id=r.id, action='attended') }}">
+                    <button class="small-button" type="submit">Present</button>
+                </form>
+            </div>
+        </td>
+    </tr>
+    {% else %}
+    <tr>
+        <td colspan="5">No registrations yet.</td>
+    </tr>
+    {% endfor %}
+</table>
+</div>
+{% endblock %}

@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+{% block title %}Student Dashboard | HelpHive{% endblock %}
+{% block content %}
+
+<div class="page-heading">
+    <div>
+        <h1>Hello, {{ current_user.get('name') }} 👋</h1>
+        <p>Your volunteering journey and experience.</p>
+    </div>
+    <a class="button" href="{{ url_for('opportunities') }}">Find opportunities →</a>
+</div>
+
+<section class="experience-panel">
+    <div class="experience-main">
+        <span class="tag">VOLUNTEER EXPERIENCE</span>
+        <h2>{{ experience_level }}</h2>
+        <p>Your experience grows automatically as organizers mark you present at events.</p>
+    </div>
+    <div class="experience-stats">
+        <div class="experience-stat"><strong>{{ experience.attended_events or 0 }}</strong><span>Events attended</span></div>
+        <div class="experience-stat"><strong>{{ experience.categories_count or 0 }}</strong><span>Causes explored</span></div>
+    </div>
+</section>
+
+{% if experience.categories %}
+<div class="experience-categories">
+    <strong>Areas you've participated in:</strong>
+    {% for category in experience.categories.split(',') %}
+        <span class="tag">{{ category }}</span>
+    {% endfor %}
+</div>
+{% endif %}
+
+<div class="section-heading">
+    <div>
+        <h2>My registrations</h2>
+        <p>Track your applications, attendance and feedback.</p>
+    </div>
+</div>
+
+<div class="table-wrap">
+<table>
+    <tr>
+        <th>Opportunity</th>
+        <th>Date</th>
+        <th>Status</th>
+        <th>Attendance</th>
+        <th>Feedback</th>
+    </tr>
+
+    {% for r in registrations %}
+    <tr>
+        <td>{{ r.title }}</td>
+        <td>{{ r.event_date }}</td>
+        <td><span class="status {{ r.status }}">{{ r.status }}</span></td>
+        <td>{{ 'Present' if r.attendance else 'Not marked' }}</td>
+        <td>
+            {% if r.feedback_id %}
+                <span class="feedback-done">★ {{ r.feedback_rating }}/5</span>
+                <a class="table-link" href="{{ url_for('feedback', opportunity_id=r.opportunity_id) }}">Edit</a>
+            {% elif r.attendance %}
+                <a class="small-button" href="{{ url_for('feedback', opportunity_id=r.opportunity_id) }}">Give feedback</a>
+            {% else %}
+                <span class="muted">After attendance</span>
+            {% endif %}
+        </td>
+    </tr>
+    {% else %}
+    <tr>
+        <td colspan="5">No registrations yet. Find an opportunity and start building your experience.</td>
+    </tr>
+    {% endfor %}
+</table>
+</div>
+{% endblock %}

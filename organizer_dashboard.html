@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block title %}Organizer Dashboard | HelpHive{% endblock %}
+{% block content %}
+
+<div class="page-heading">
+    <div>
+        <h1>Organizer dashboard</h1>
+        <p>Create opportunities and manage your volunteers.</p>
+    </div>
+    <a class="button" href="{{ url_for('create_opportunity') }}">+ Create opportunity</a>
+</div>
+
+<div class="grid">
+{% for item in opportunities %}
+    <article class="card">
+        <span class="tag">{{ item.category }}</span>
+        <h3>{{ item.title }}</h3>
+        <p>📅 {{ item.event_date }} · 📍 {{ item.location }}</p>
+        <p><strong>{{ item.registration_count }}</strong> registrations ·
+            {% if item.average_rating %}<strong>★ {{ item.average_rating }}/5</strong>{% else %}No feedback yet{% endif %}
+        </p>
+
+        <div class="card-bottom">
+            <a href="{{ url_for('registrations', opportunity_id=item.id) }}">Volunteers →</a>
+            <a href="{{ url_for('opportunity_feedback', opportunity_id=item.id) }}">Feedback{% if item.feedback_count %} ({{ item.feedback_count }}){% endif %}</a>
+            <a href="{{ url_for('edit_opportunity', opportunity_id=item.id) }}">Edit</a>
+        </div>
+
+        <form method="POST" action="{{ url_for('delete_opportunity', opportunity_id=item.id) }}"
+              onsubmit="return confirm('Delete this opportunity?')">
+            <button class="link-danger" type="submit">Delete</button>
+        </form>
+    </article>
+{% else %}
+    <div class="card">
+        <h3>No opportunities yet</h3>
+        <p>Create your first volunteering program to start building your volunteer team.</p>
+        <a class="button" href="{{ url_for('create_opportunity') }}">Create opportunity →</a>
+    </div>
+{% endfor %}
+</div>
+{% endblock %}

@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block title %}Explore | HelpHive{% endblock %}
+{% block content %}
+
+<div class="page-heading">
+    <div>
+        <h1>Explore opportunities</h1>
+        <p>Find a cause that matters to you.</p>
+    </div>
+</div>
+
+<form class="filters" method="GET">
+    <input name="search" value="{{ search }}" placeholder="Search opportunities, causes or locations...">
+
+    <select name="category">
+        <option value="">All categories</option>
+        {% for c in ['Environment','Education','Social Service','Health','Technology','Campus','Other'] %}
+            <option value="{{ c }}" {% if category==c %}selected{% endif %}>{{ c }}</option>
+        {% endfor %}
+    </select>
+
+    <button class="button" type="submit">Search</button>
+</form>
+
+<div class="grid">
+{% for item in opportunities %}
+    <article class="card">
+        <span class="tag">{{ item.category }}</span>
+        <h3>{{ item.title }}</h3>
+        <p>{{ item.description }}</p>
+        <div class="meta">📍 {{ item.location }}</div>
+        <div class="meta">📅 {{ item.event_date }}</div>
+        <div class="card-bottom">
+            <span>{{ item.volunteer_count }}/{{ item.capacity }} joined</span>
+            <a href="{{ url_for('opportunity_detail', opportunity_id=item.id) }}">View →</a>
+        </div>
+    </article>
+{% else %}
+    <p>No matching opportunities found.</p>
+{% endfor %}
+</div>
+{% endblock %}

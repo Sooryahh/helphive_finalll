@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+{% block title %}HelpHive | Volunteer Together{% endblock %}
+{% block content %}
+
+<section class="hero">
+    <div>
+        <span class="eyebrow">COLLEGE COMMUNITY PLATFORM</span>
+        <h1>Small actions.<br><span>Big impact.</span></h1>
+        <p>
+            Discover volunteering opportunities, connect with student communities,
+            and turn a few hours into meaningful campus impact.
+        </p>
+
+        <div class="hero-actions">
+            <a class="button" href="{{ url_for('opportunities') }}">Explore opportunities →</a>
+            {% if not current_user.get('user_id') %}
+                <a class="button secondary" href="{{ url_for('register') }}">Create an account</a>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="hero-card">
+        <div>
+            <div class="bee">🐝</div>
+            <h3>Be part of the hive</h3>
+            <p>Every volunteer makes a difference.</p>
+        </div>
+    </div>
+</section>
+
+<section class="feature-strip">
+    <div class="feature">
+        <div class="feature-icon">🙋</div>
+        <h3>For Students</h3>
+        <p>Find opportunities and apply in a few clicks.</p>
+    </div>
+    <div class="feature">
+        <div class="feature-icon">📋</div>
+        <h3>For Organizers</h3>
+        <p>Create events and manage volunteer applications.</p>
+    </div>
+    <div class="feature">
+        <div class="feature-icon">🛡️</div>
+        <h3>Smart Duplicate Guard</h3>
+        <p>Help prevent duplicate programs and applications.</p>
+    </div>
+</section>
+
+<section class="section-heading">
+    <div>
+        <h2>Upcoming opportunities</h2>
+        <p>Find something that matters to you.</p>
+    </div>
+    <a href="{{ url_for('opportunities') }}">View all →</a>
+</section>
+
+<div class="grid">
+{% for item in opportunities %}
+    <article class="card">
+        <span class="tag">{{ item.category }}</span>
+        <h3>{{ item.title }}</h3>
+        <p>{{ item.description[:120] }}{% if item.description|length > 120 %}...{% endif %}</p>
+        <div class="meta">📍 {{ item.location }}</div>
+        <div class="meta">📅 {{ item.event_date }}</div>
+        <div class="card-bottom">
+            <span>{{ item.volunteer_count }}/{{ item.capacity }} volunteers</span>
+            <a href="{{ url_for('opportunity_detail', opportunity_id=item.id) }}">Details →</a>
+        </div>
+    </article>
+{% else %}
+    <p>No upcoming opportunities yet. Be the first organizer to create one.</p>
+{% endfor %}
+</div>
+{% endblock %}
